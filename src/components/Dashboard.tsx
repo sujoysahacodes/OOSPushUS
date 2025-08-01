@@ -9,7 +9,8 @@ import { StoreMap } from './dashboard/StoreMap';
 import { ProductCatalog } from './dashboard/ProductCatalog';
 import { DemandForecasting } from './dashboard/DemandForecasting';
 import { useOOSStore } from '@/stores/oosStore';
-import { 
+import { useSocket } from '@/hooks/useSocket';
+import {
   Download,
   RefreshCw,
   AlertTriangle,
@@ -21,17 +22,44 @@ import {
 export function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const { initializeRealTimeConnection, fetchStores, fetchProducts, fetchAlerts } = useOOSStore();
+  const {
+    oosEvents,
+    isLoading,
+    error,
+    fetchOOSEvents,
+    products,
+    fetchProducts,
+    stores,
+    fetchStores,
+    alerts,
+    fetchAlerts
+  } = useOOSStore();
 
   useEffect(() => {
-    // Initialize WebSocket connection for real-time updates
-    initializeRealTimeConnection();
-    
-    // Load initial data
-    fetchStores();
+    fetchOOSEvents();
     fetchProducts();
+    fetchStores();
     fetchAlerts();
-  }, [initializeRealTimeConnection, fetchStores, fetchProducts, fetchAlerts]);
+  }, [fetchOOSEvents, fetchProducts, fetchStores, fetchAlerts]);
+
+  useSocket('oos-update', fetchOOSEvents);
+  useSocket('alert-update', fetchAlerts);
+
+  // Optionally, show a global loading or error state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="text-lg text-gray-600">Loading dashboard...</span>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="text-lg text-red-600">{error}</span>
+      </div>
+    );
+  }
 
   const renderContent = () => {
     switch (activeTab) {

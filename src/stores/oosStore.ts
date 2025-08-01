@@ -1,3 +1,49 @@
+// --- ABC OOS Scenario Store and Mock Data ---
+import { Warehouse, Wholesaler, Product as ABCProduct, ChangeRequest, ShipmentPlan } from '../types/abcOOS';
+
+export const abcMockProducts: ABCProduct[] = [
+  { id: 'p1', name: 'Whiskey', category: 'Spirits' },
+  { id: 'p2', name: 'Vodka', category: 'Spirits' },
+  { id: 'p3', name: 'Beer', category: 'Beer' },
+];
+
+export const abcMockWarehouses: Warehouse[] = [
+  { id: 'w1', name: 'Warehouse A', location: 'SF North', inventory: { p1: 500, p2: 300, p3: 1000 } },
+  { id: 'w2', name: 'Warehouse B', location: 'SF Central', inventory: { p1: 400, p2: 400, p3: 800 } },
+  { id: 'w3', name: 'Warehouse C', location: 'SF South', inventory: { p1: 600, p2: 200, p3: 1200 } },
+];
+
+export const abcMockWholesalers: Wholesaler[] = [
+  { id: 'h1', name: 'Golden Gate Distributors', location: 'SF Downtown', forecast: { p1: 200, p2: 100, p3: 400 }, lastOrder: { p1: 180, p2: 90, p3: 350 } },
+  { id: 'h2', name: 'Bay Spirits', location: 'SF Marina', forecast: { p1: 150, p2: 120, p3: 300 }, lastOrder: { p1: 140, p2: 110, p3: 280 } },
+  { id: 'h3', name: 'Mission Liquors', location: 'SF Mission', forecast: { p1: 180, p2: 80, p3: 350 }, lastOrder: { p1: 170, p2: 70, p3: 320 } },
+  { id: 'h4', name: 'Sunset Beverages', location: 'SF Sunset', forecast: { p1: 130, p2: 90, p3: 250 }, lastOrder: { p1: 120, p2: 85, p3: 230 } },
+  { id: 'h5', name: 'Castro Wines', location: 'SF Castro', forecast: { p1: 160, p2: 110, p3: 320 }, lastOrder: { p1: 150, p2: 100, p3: 300 } },
+];
+
+export const abcMockChangeRequests: ChangeRequest[] = [
+  { id: 'r1', wholesalerId: 'h1', productId: 'p1', requestedQty: 220, source: 'email', receivedAt: '2025-07-28T08:00:00Z', parsed: true },
+  { id: 'r2', wholesalerId: 'h3', productId: 'p3', requestedQty: 400, source: 'servicenow', receivedAt: '2025-07-28T09:00:00Z', parsed: true },
+  { id: 'r3', wholesalerId: 'h5', productId: 'p2', requestedQty: 130, source: 'email', receivedAt: '2025-07-28T10:00:00Z', parsed: true },
+];
+
+type ABCOOSStore = {
+  products: ABCProduct[];
+  warehouses: Warehouse[];
+  wholesalers: Wholesaler[];
+  changeRequests: ChangeRequest[];
+  shipmentPlans: ShipmentPlan[];
+  setShipmentPlans: (plans: ShipmentPlan[]) => void;
+};
+
+export const useABCOOSStore = create<ABCOOSStore>((set) => ({
+  products: abcMockProducts,
+  warehouses: abcMockWarehouses,
+  wholesalers: abcMockWholesalers,
+  changeRequests: abcMockChangeRequests,
+  shipmentPlans: [],
+  setShipmentPlans: (plans) => set({ shipmentPlans: plans }),
+}));
 import { create } from 'zustand';
 import { io, Socket } from 'socket.io-client';
 import {

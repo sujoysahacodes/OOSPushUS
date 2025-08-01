@@ -7,6 +7,7 @@ import DistributionOverview from '../components/distribution/DistributionOvervie
 import RequestProcessor from '../components/distribution/RequestProcessor';
 import DemandIntelligence from '../components/distribution/DemandIntelligence';
 import NetworkOptimizer from '../components/distribution/NetworkOptimizer';
+import { Dashboard } from '../components/Dashboard';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('overview');
@@ -27,14 +28,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="flex">
-        <DistributionSidebar activeSection={activeSection} setActiveSection={setActiveSection} />
-        <main className="flex-1 p-8">
-          {renderActiveSection()}
-        </main>
-      </div>
-    </div>
+    <main className="min-h-screen bg-gray-50">
+      <header className="bg-blue-900 text-white p-4 text-xl font-bold">OOS Copilot Dashboard</header>
+      <Dashboard />
+    </main>
   );
 }
